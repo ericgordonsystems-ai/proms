@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>KOOS, JR. knee survey</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#F3F5F7; --surface:#FFFFFF; --ink:#13181D; --muted:#56626E; --line:#CBD3DA;
+  --accent:#0B5CAD; --accent-ink:#FFFFFF; --warn:#B3261E; --soft:#E4EDF7;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1317; --surface:#181E24; --ink:#EEF1F4; --muted:#9AA6B2; --line:#303B46;
+    --accent:#6FB1F2; --accent-ink:#0B1218; --warn:#FF8A80; --soft:#1B2937;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1317; --surface:#181E24; --ink:#EEF1F4; --muted:#9AA6B2; --line:#303B46;
+  --accent:#6FB1F2; --accent-ink:#0B1218; --warn:#FF8A80; --soft:#1B2937;
+  color-scheme:dark;
+}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 12px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Public Sans",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:17px;line-height:1.5;-webkit-text-size-adjust:100%}
+main{max-width:520px;margin:0 auto;padding:24px 16px 56px}
+h1{font-size:30px;line-height:1.15;font-weight:700;letter-spacing:-0.01em;margin:8px 0 8px}
+h2{font-size:20px;line-height:1.25;font-weight:700;margin:36px 0 6px}
+p{margin:0 0 12px}
+.lede{color:var(--muted);margin-bottom:8px}
+.note{color:var(--muted);font-size:14px;line-height:1.45}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;margin:12px 0}
+label.field,.field-label{display:block;font-weight:600;font-size:15px;margin:0 0 6px}
+input[type=text],input[type=date]{width:100%;min-height:50px;padding:10px 12px;font:inherit;color:var(--ink);
+  background:var(--bg);border:1.5px solid var(--line);border-radius:10px}
+input[type=text]:focus-visible,input[type=date]:focus-visible{outline:3px solid var(--accent);outline-offset:1px}
+.row{margin-bottom:16px}.row:last-child{margin-bottom:0}
+fieldset{border:0;margin:0;padding:0;min-width:0}
+legend{float:left;width:100%;padding:0;font-weight:600;font-size:17px;line-height:1.35;margin:0 0 12px}
+legend+*{clear:both}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;margin:12px 0}
+.q.missing{border-color:var(--warn)}
+.q.missing legend,.row.missing .field-label{color:var(--warn)}
+.opts{display:grid;grid-template-columns:repeat(var(--n,5),minmax(0,1fr));gap:6px}
+.opt{position:relative;display:block}
+.opt input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer}
+.opt span{display:flex;align-items:center;justify-content:center;text-align:center;min-height:50px;padding:0 2px;
+  border:1.5px solid var(--line);border-radius:10px;background:var(--bg);font-size:12px;font-weight:500;line-height:1.2;letter-spacing:-0.01em}
+.opts.wide .opt span{font-size:15px;padding:0 6px}
+.opt input:checked+span{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
+.opt input:focus-visible+span{outline:3px solid var(--accent);outline-offset:2px}
+.btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:56px;border-radius:12px;font:inherit;
+  font-weight:700;font-size:17px;border:1.5px solid var(--accent);cursor:pointer;text-decoration:none;margin-top:12px}
+.btn.primary{background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.msg{color:var(--warn);font-weight:600;font-size:15px;margin:14px 0 0;min-height:1.4em}
+#result{display:none}
+.score{display:flex;align-items:baseline;gap:10px;margin:8px 0 4px}
+.score b{font-size:92px;line-height:1;font-weight:700;letter-spacing:-0.03em;font-variant-numeric:tabular-nums}
+.score span{font-size:18px;color:var(--muted);font-weight:500}
+.track{position:relative;height:12px;border-radius:6px;background:var(--soft);margin:14px 0 6px;overflow:hidden}
+.track i{position:absolute;left:0;top:0;bottom:0;background:var(--accent);border-radius:6px}
+.ends{display:flex;justify-content:space-between;font-size:13px;color:var(--muted)}
+.band{font-size:22px;font-weight:700;margin:22px 0 6px;line-height:1.25}
+.flag{border-left:4px solid var(--accent);padding:2px 0 2px 12px;margin-top:20px}
+.status{color:var(--muted);font-size:14px;margin-top:10px;min-height:1.4em}
+.legal{margin-top:40px;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font-size:12px;line-height:1.5}
+@media (prefers-reduced-motion: no-preference){.track i{transition:width .5s ease}}
+</style>
+</head>
+<body>
+<main>
+
+<section id="survey">
+  <h1>Knee survey</h1>
+  <p class="lede">Seven short questions about your knee. It takes about 3 minutes. Answer every question, choosing one box for each. If you are unsure, give the best answer you can.</p>
+
+  <div class="card" id="patient">
+    <div class="row" id="r-name">
+      <label class="field" for="name">Full name</label>
+      <input type="text" id="name" autocomplete="name" autocapitalize="words">
+    </div>
+    <div class="row" id="r-dob">
+      <label class="field" for="dob">Date of birth</label>
+      <input type="date" id="dob" autocomplete="bday">
+    </div>
+    <div class="row" id="r-side">
+      <div class="field-label">Which knee is this survey about?</div>
+      <div class="opts wide" style="--n:2" id="side"></div>
+    </div>
+    <div class="row" id="r-when">
+      <div class="field-label">When are you taking this survey?</div>
+      <div class="opts wide" style="--n:1" id="when"></div>
+    </div>
+    <div class="row" id="r-date">
+      <label class="field" for="date">Today’s date</label>
+      <input type="date" id="date">
+    </div>
+  </div>
+
+  <div id="questions"></div>
+
+  <div class="msg" id="err" role="alert"></div>
+  <button class="btn primary" id="go" type="button">See my score</button>
+  <p class="note" style="margin-top:14px">Your answers stay on this page. Nothing is saved or sent until you tap the text button on the next screen.</p>
+</section>
+
+<section id="result" aria-live="polite">
+  <h1>Your knee score</h1>
+  <div class="score"><b id="s-num">0</b><span>out of 100</span></div>
+  <div class="track" aria-hidden="true"><i id="s-bar" style="width:0"></i></div>
+  <div class="ends"><span>0 &nbsp;most problems</span><span>no problems&nbsp; 100</span></div>
+
+  <div class="band" id="s-band"></div>
+  <p id="s-text"></p>
+  <p id="s-when"></p>
+  <p class="note">A higher score is better. This is a summary of how you answered, not a diagnosis. Your surgeon will go over it with you.</p>
+
+  <div class="flag note">If you have sudden severe pain, swelling, fever, or cannot put weight on your leg, call the office or seek urgent care. Do not wait for this survey to be reviewed.</div>
+
+  <a class="btn primary" id="sms" href="#">Text my result to my care team</a>
+  <button class="btn ghost" id="copy" type="button">Copy result</button>
+  <button class="btn ghost" id="back" type="button">Change my answers</button>
+  <div class="status" id="status"></div>
+  <p class="note">Tapping the text button opens your messages app with the result already written. Your name and date of birth are included so the office can match it to your chart. Review it, then press send.</p>
+</section>
+
+<p class="legal">Knee injury and Osteoarthritis Outcome Score for Joint Replacement (KOOS, JR.), English version 1.0. © 2020 Hospital for Special Surgery, 535 East 70th Street, New York, NY 10021. HSS and the HSS logo are trademarks or registered trademarks of Hospital for Special Surgery in the United States and other countries.</p>
+
+</main>
+<script>
+const CFG = {"legal": "Knee injury and Osteoarthritis Outcome Score for Joint Replacement (KOOS, JR.), English version 1.0. © 2020 Hospital for Special Surgery, 535 East 70th Street, New York, NY 10021. HSS and the HSS logo are trademarks or registered trademarks of Hospital for Special Surgery in the United States and other countries.", "title": "KOOS, JR. knee survey", "head": "Knee survey", "joint": "knee", "short": "KOOS JR", "count": 7, "maxRaw": 28, "table": [100.0, 91.975, 84.6, 79.914, 76.332, 73.342, 70.704, 68.284, 65.994, 63.776, 61.583, 59.381, 57.14, 54.84, 52.465, 50.012, 47.487, 44.905, 42.281, 39.625, 36.931, 34.174, 31.307, 28.251, 24.875, 20.941, 15.939, 8.291, 0.0], "bands": [{"min": 64, "short": "Doing well", "title": "Doing well", "text": "Your knee is working well for daily life."}, {"min": 50, "short": "Some limits", "title": "Some limits", "text": "Your knee limits some activities. This is common and worth tracking."}, {"min": 35, "short": "Noticeable limits", "title": "Noticeable limits", "text": "Your knee is affecting everyday activities. Your surgeon will go over what this means for you."}, {"min": -1, "short": "Significant limits", "title": "Significant limits", "text": "Your knee is limiting many activities. Your surgeon will review this with you."}], "sections": [{"heading": "Stiffness", "intro": "The following question concerns the amount of joint stiffness you have experienced during the <b>last week</b> in your knee. Stiffness is a sensation of restriction or slowness in the ease of which you move your knee joint.", "items": ["How severe is your knee stiffness after first wakening in the morning?"]}, {"heading": "Pain", "intro": "What amount of knee pain have you experienced in the <b>last week</b> during the following activities?", "items": ["Twisting/pivoting on your knee", "Straightening knee fully", "Going up or down stairs", "Standing upright"]}, {"heading": "Function, daily living", "intro": "The following questions concern your physical function. By this we mean your ability to move around and to look after yourself. For each of the following activities please indicate the degree of difficulty you have experienced in the <b>last week</b> due to your knee.", "items": ["Rising from sitting", "Bending to floor/pick up an object"]}]};
+const PHONE = "+19178331870";
+
+const $ = (id) => document.getElementById(id);
+const answers = new Array(CFG.count).fill(null);
+
+function radios(container, name, labels){
+  labels.forEach((l, i) => {
+    const w = document.createElement("label"); w.className = "opt";
+    const inp = document.createElement("input"); inp.type = "radio"; inp.name = name; inp.value = String(i);
+    const sp = document.createElement("span"); sp.textContent = l;
+    w.append(inp, sp); container.append(w);
+    inp.addEventListener("change", () => clearMissing(container.closest(".row")));
+  });
+}
+function clearMissing(el){ if(el) el.classList.remove("missing"); }
+
+radios($("side"), "side", ["Left", "Right"]);
+radios($("when"), "when", ["Before surgery", "After surgery", "Other check-in"]);
+$("when").style.setProperty("--n", "1");
+$("when").style.gridTemplateColumns = "1fr";
+
+function today(){
+  const d = new Date();
+  const p = (n) => String(n).padStart(2, "0");
+  return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate());
+}
+$("date").value = today();
+
+const LABELS = ["None", "Mild", "Moderate", "Severe", "Extreme"];
+let idx = 0;
+const qwrap = $("questions");
+CFG.sections.forEach((sec) => {
+  const h = document.createElement("h2"); h.textContent = sec.heading; qwrap.append(h);
+  const p = document.createElement("p"); p.className = "note"; p.innerHTML = sec.intro; qwrap.append(p);
+  sec.items.forEach((text) => {
+    const i = idx++;
+    const fs = document.createElement("fieldset"); fs.className = "q"; fs.id = "q" + i;
+    const lg = document.createElement("legend"); lg.textContent = (i + 1) + ". " + text; fs.append(lg);
+    const g = document.createElement("div"); g.className = "opts"; fs.append(g);
+    LABELS.forEach((l, v) => {
+      const w = document.createElement("label"); w.className = "opt";
+      const inp = document.createElement("input"); inp.type = "radio"; inp.name = "q" + i; inp.value = String(v);
+      const sp = document.createElement("span"); sp.textContent = l;
+      w.append(inp, sp); g.append(w);
+      inp.addEventListener("change", () => { answers[i] = v; fs.classList.remove("missing"); });
+    });
+    qwrap.append(fs);
+  });
+});
+
+function val(name){ const c = document.querySelector('input[name="' + name + '"]:checked'); return c ? c.value : null; }
+
+function fmtDate(iso){ const [y, m, d] = iso.split("-"); return m + "/" + d + "/" + y; }
+
+let current = null;
+
+$("go").addEventListener("click", () => {
+  const missing = [];
+  const name = $("name").value.trim();
+  if(!name) missing.push($("r-name"));
+  if(!$("dob").value) missing.push($("r-dob"));
+  if(val("side") === null) missing.push($("r-side"));
+  if(val("when") === null) missing.push($("r-when"));
+  if(!$("date").value) missing.push($("r-date"));
+  answers.forEach((a, i) => { if(a === null) missing.push($("q" + i)); });
+  document.querySelectorAll(".missing").forEach((e) => e.classList.remove("missing"));
+  if(missing.length){
+    missing.forEach((e) => e.classList.add("missing"));
+    $("err").textContent = missing.length === 1
+      ? "One item still needs an answer. It is highlighted above."
+      : missing.length + " items still need an answer. They are highlighted.";
+    missing[0].scrollIntoView({behavior: "smooth", block: "center"});
+    return;
+  }
+  $("err").textContent = "";
+
+  const raw = answers.reduce((a, b) => a + b, 0);
+  const score = CFG.table[raw];
+  const band = CFG.bands.find((b) => score >= b.min);
+  const side = val("side") === "0" ? "Left" : "Right";
+  const whenLabel = ["Before surgery", "After surgery", "Other check-in"][Number(val("when"))];
+  current = {
+    name, dob: fmtDate($("dob").value), side, whenLabel, date: fmtDate($("date").value),
+    raw, score, band
+  };
+
+  $("s-num").textContent = score.toFixed(1);
+  $("s-bar").style.width = "0";
+  requestAnimationFrame(() => { $("s-bar").style.width = Math.max(score, 1) + "%"; });
+  $("s-band").textContent = band.title;
+  $("s-text").textContent = band.text;
+  $("s-when").textContent = ["This is your starting point. Lower scores are common before joint replacement, and we’ll compare your future scores to it.","Scores are meant to rise over time after surgery. We’ll track yours at each visit.","We’ll track your score over time."][Number(val("when"))];
+
+  const body = [
+    CFG.short + " result",
+    "Name: " + name,
+    "DOB: " + current.dob,
+    "Side: " + side + " " + CFG.joint,
+    "Timepoint: " + whenLabel,
+    "Date: " + current.date,
+    "Answers (0-4): " + answers.join(","),
+    "Raw: " + raw + "/" + CFG.maxRaw,
+    "Score: " + score.toFixed(1) + "/100 (" + band.short + ")"
+  ].join("\n");
+  current.body = body;
+  $("sms").href = "sms:" + PHONE + "?&body=" + encodeURIComponent(body);
+
+  $("survey").style.display = "none";
+  $("result").style.display = "block";
+  $("status").textContent = "";
+  window.scrollTo(0, 0);
+});
+
+$("back").addEventListener("click", () => {
+  $("result").style.display = "none";
+  $("survey").style.display = "block";
+  window.scrollTo(0, 0);
+});
+
+$("copy").addEventListener("click", async () => {
+  if(!current) return;
+  try{
+    await navigator.clipboard.writeText(current.body);
+    $("status").textContent = "Copied. Paste it into a message to your care team.";
+  }catch(e){
+    const t = document.createElement("textarea");
+    t.value = current.body; t.style.position = "fixed"; t.style.opacity = "0";
+    document.body.append(t); t.select();
+    try{ document.execCommand("copy"); $("status").textContent = "Copied. Paste it into a message to your care team."; }
+    catch(e2){ $("status").textContent = "Copy didn’t work. Use the text button instead."; }
+    t.remove();
+  }
+});
+</script>
+</body>
+</html>
